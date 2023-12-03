@@ -3,6 +3,9 @@ var mongoose = require("mongoose");
 var jobSchema = new mongoose.Schema({
   title: String,
   description: String,
+  descriptionFile: String,
+  jobType: String,
+  experienceLevel: String,
   image: {
     public_id: String,
     url: String,
@@ -17,8 +20,16 @@ var jobSchema = new mongoose.Schema({
   },
   applicants: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Candidate",
+      applicant: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Candidate",
+      },
+      resumeFile: {
+        type: String,
+      },
+      score: {
+        type: String,
+      },
     },
   ],
 });
