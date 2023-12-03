@@ -1,20 +1,22 @@
 const User = require("../models/user");
 const Post = require("../models/posts");
 const Recruiters = require("../models/recruiter");
+const Candidates = require("../models/candidate");
+const Jobs = require("../models/jobs");
 
-exports.loginRecruiter = async (req, res) => {
+exports.loginCandidate = async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log(email, password);
-    const recruiter = await Recruiters.findOne({ email }).select("+password");
+    const candidate = await Candidates.findOne({ email }).select("+password");
 
-    if (!recruiter) {
+    if (!candidate) {
       return res.status(400).json({
         success: false,
         message: "User with this email does not exists",
       });
     }
-    const isMatch = await recruiter.matchPassword(password);
+    const isMatch = await candidate.matchPassword(password);
 
     if (!isMatch) {
       return res.status(400).json({
@@ -26,10 +28,10 @@ exports.loginRecruiter = async (req, res) => {
       expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       httpOnly: true,
     };
-    const token = await recruiter.generateToken();
+    const token = await candidate.generateToken();
     res.status(200).cookie("token", token, options).json({
       success: true,
-      recruiter,
+      candidate,
       token,
     });
   } catch (error) {
@@ -40,14 +42,14 @@ exports.loginRecruiter = async (req, res) => {
   }
 };
 
-exports.logoutRecruiter = async (req, res) => {
+exports.logoutCandidate = async (req, res) => {
   try {
     res
       .status(200)
       .cookie("token", null, { expires: new Date(Date.now()), httpOnly: true })
       .json({
         success: true,
-        message: "Recruiter Loged Out",
+        message: "Candidate Loged Out",
       });
   } catch (error) {
     res.status(500).json({
@@ -57,30 +59,25 @@ exports.logoutRecruiter = async (req, res) => {
   }
 };
 
-exports.registerRecruiter = async (req, res) => {
+exports.registerCandidate = async (req, res) => {
   try {
-    const { name, email, password, avatar, bio } = req.body;
-    let recruiter = await Recruiters.findOne({ email });
-    if (recruiter) {
+    const { name, email, password, avatar } = req.body;
+    let candidate = await Candidates.findOne({ email });
+    if (candidate) {
       return res.status(400).json({
         success: false,
-        message: "User already Exists",
+        message: "User(candidate) already Exists",
       });
     }
 
-    recruiter = await Recruiters.create({
+    candidate = await Candidates.create({
       name,
       email,
       password,
       avatar,
-      bio,
-      // avatar: {
-      //   public_id: "sample_id",
-      //   url: "sample Url",
-      // },
     });
 
-    res.status(201).json({ success: true, recruiter });
+    res.status(201).json({ success: true, candidate });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -126,17 +123,17 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
-exports.updateRecruiterProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
   try {
-    const recruiter = await Recruiters.findById(req.recruiter._id);
+    const user = await User.findById(req.user._id);
     const { name, email } = req.body;
     if (name) {
-      recruiter.name = name;
+      user.name = name;
     }
     if (email) {
-      recruiter.email = email;
+      user.email = email;
     }
-    await recruiter.save();
+    await user.save();
 
     res.status(200).json({
       success: true,
@@ -200,14 +197,49 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-exports.getMyRecruiterProfile = async (req, res) => {
+exports.getMyCandidateProfile = async (req, res) => {
   try {
-    const recruiter = await Recruiters.findById(req.recruiter._id).populate(
-      "jobs"
-    );
+    const candidate = await Candidates.findById(req.recruiter._id);
     res.status(200).json({
       success: true,
-      recruiter,
+      candidate,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate("posts");
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "User Not Found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const user = await User.find({});
+
+    res.status(200).json({
+      success: true,
+      user,
     });
   } catch (error) {
     res.status(500).json({
@@ -253,6 +285,33 @@ exports.forgetPassword = async (req, res) => {
         message: error.message,
       });
     }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.applyOnJob = async (req, res) => {
+  try {
+    const job = await Jobs.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "job Not Found",
+      });
+    }
+    job.applicants.push({
+      applicant: req.candidate._id,
+      resumeFile: req.body.resumeFile,
+    });
+
+    await job.save();
+    return res.status(200).json({
+      success: true,
+      message: "Applied Successfully on the Job",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

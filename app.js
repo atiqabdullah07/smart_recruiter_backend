@@ -15,10 +15,11 @@ var postRouter = require("./routes/post");
 var userRouter = require("./routes/user");
 var jobRouter = require("./routes/job");
 var recruiterRouter = require("./routes/recruiter");
+var candidateRouter = require("./routes/candidate");
 
 var app = express();
 
-// Make Connection with the mongodb database
+// Make Connection with the database
 
 const connection = mongoose.connect(
   "mongodb+srv://smartrecruiter:OhfdsK8S7R3ERfD3@cluster0.fqopnou.mongodb.net/?retryWrites=true&w=majority"
@@ -54,6 +55,7 @@ app.use("/api/v1", postRouter);
 app.use("/api/v1", userRouter);
 app.use("/api/v1", jobRouter);
 app.use("/api/v1", recruiterRouter);
+app.use("/api/v1", candidateRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

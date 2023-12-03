@@ -10,14 +10,7 @@ var candidateSchema = new mongoose.Schema({
   avatar: {
     type: String,
   },
-  about: {
-    type: String,
-  },
 
-  // avatar: {
-  //   public_id: String,
-  //   url: String,
-  // },
   email: {
     type: String,
     required: [true, "Please enter an Email"],
@@ -34,7 +27,7 @@ var candidateSchema = new mongoose.Schema({
   resetPasswordDate: Date,
 });
 
-userSchema.pre("save", async function (next) {
+candidateSchema.pre("save", async function (next) {
   // It means bcrypt the password on saving
   if (this.isModified("password")) {
     // Do only when password is modified
@@ -63,6 +56,6 @@ candidateSchema.methods.getResetPasswordToken = function () {
   return resetToken;
 };
 
-const candidates = mongoose.model("Candidate", candidateSchema);
+const Candidates = mongoose.model("Candidate", candidateSchema);
 
-module.exports = candidates;
+module.exports = Candidates;

@@ -14,10 +14,6 @@ var recruiterSchema = new mongoose.Schema({
     type: String,
   },
 
-  // avatar: {
-  //   public_id: String,
-  //   url: String,
-  // },
   email: {
     type: String,
     required: [true, "Please enter an Email"],
@@ -32,7 +28,7 @@ var recruiterSchema = new mongoose.Schema({
   jobs: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Jobs",
+      ref: "Job",
     },
   ],
 
