@@ -22,10 +22,7 @@ var candidateRouter = require("./routes/candidate");
 
 var app = express();
 initializeApp(firebaseConfig);
-// Make Connection with the mongodb database
-var candidateRouter = require("./routes/candidate");
 
-var app = express();
 
 // Make Connection with the database
 
