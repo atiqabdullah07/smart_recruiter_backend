@@ -1,4 +1,4 @@
-import {uploadFile} from "../controllers/uploadFile";
+const { uploadFile } = require("../controllers/uploadFile");
 
 var express = require("express");
 var router = express.Router();

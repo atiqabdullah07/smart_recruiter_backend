@@ -4,8 +4,6 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 require("dotenv").config();
-import { initializeApp } from "firebase/app";
-import {firebaseConfig} from "../config/firebase_config";
 
 const mongoose = require("mongoose");
 var cors = require("cors");
@@ -21,7 +19,7 @@ var uploadFileRouter = require("./routes/firebase");
 var candidateRouter = require("./routes/candidate");
 
 var app = express();
-initializeApp(firebaseConfig);
+
 
 
 // Make Connection with the database
