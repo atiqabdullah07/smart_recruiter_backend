@@ -4,6 +4,8 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 require("dotenv").config();
+import { initializeApp } from "firebase/app";
+import {firebaseConfig} from "../config/firebase_config";
 
 const mongoose = require("mongoose");
 var cors = require("cors");
@@ -15,9 +17,9 @@ var postRouter = require("./routes/post");
 var userRouter = require("./routes/user");
 var jobRouter = require("./routes/job");
 var recruiterRouter = require("./routes/recruiter");
-
+var uploadFileRouter = require("./routes/firebase");
 var app = express();
-
+initializeApp(firebaseConfig);
 // Make Connection with the mongodb database
 
 const connection = mongoose.connect(
@@ -54,6 +56,7 @@ app.use("/api/v1", postRouter);
 app.use("/api/v1", userRouter);
 app.use("/api/v1", jobRouter);
 app.use("/api/v1", recruiterRouter);
+app.use("/api/v1", uploadFileRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
