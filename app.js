@@ -18,7 +18,7 @@ var recruiterRouter = require("./routes/recruiter");
 
 var app = express();
 
-// Make Connection with the database
+// Make Connection with the mongodb database
 
 const connection = mongoose.connect(
   "mongodb+srv://smartrecruiter:OhfdsK8S7R3ERfD3@cluster0.fqopnou.mongodb.net/?retryWrites=true&w=majority"
