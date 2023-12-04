@@ -46,7 +46,7 @@ exports.uploadFile = async (req, res) => {
 
             const file = req.file;
             const dateTime = givedateTime();
-            const storageRef = ref(storage, `files/${file.originalname}_${dateTime}`);
+            const storageRef = ref(storage, `files/${dateTime}_${file.originalname}`);
             const uploadTask = await uploadBytesResumable(storageRef, file.buffer);
 
             // Check if uploadTask.snapshot is defined before accessing its properties
