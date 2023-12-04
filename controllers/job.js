@@ -31,41 +31,6 @@ exports.createJob = async (req, res) => {
   }
 };
 
-exports.likeUnlikePost = async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id); // Params.id means the id we'll pass after the url
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: "Post Not Found",
-      });
-    }
-    if (post.likes.includes(req.user._id)) {
-      const index = post.likes.indexOf(req.user._id);
-      post.likes.splice(index, 1);
-      await post.save();
-
-      return res.status(200).json({
-        success: true,
-        message: "Post Unliked",
-      });
-    } else {
-      post.likes.push(req.user._id);
-      await post.save();
-
-      return res.status(200).json({
-        success: true,
-        message: "Post Liked",
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
 exports.deleteJob = async (req, res) => {
   try {
     const job = await Jobs.findById(req.params.id); // Params.id means the id we'll pass after the url
@@ -121,6 +86,47 @@ exports.updatePost = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Post Updated",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getAllJobs = async (req, res) => {
+  try {
+    const jobs = await Jobs.find();
+
+    res.status(200).json({
+      success: true,
+      jobs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.searchJobs = async (req, res) => {
+  try {
+    const { title } = req.body;
+
+    if (!title) {
+      return res.status(400).json({
+        success: false,
+        message: "Job title is required for search.",
+      });
+    }
+
+    const jobs = await Jobs.find({ title: { $regex: new RegExp(title, "i") } });
+
+    res.status(200).json({
+      success: true,
+      jobs,
     });
   } catch (error) {
     res.status(500).json({
