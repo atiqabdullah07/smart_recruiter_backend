@@ -6,11 +6,12 @@ const User = require("../models/user");
 exports.createJob = async (req, res) => {
   try {
     const newJobData = {
-      title: req.body.title,
+      title: req.body.title,  
       Image: {
         public_id: "req.body.public_id",
         url: "req.body.url",
       },
+      descriptionFile: req.body.descriptionFile,
       owner: req.recruiter._id,
     };
     const newJob = await Jobs.create(newJobData);
