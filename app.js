@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 require("dotenv").config();
 
+
 const mongoose = require("mongoose");
 var cors = require("cors");
 
@@ -15,7 +16,7 @@ var postRouter = require("./routes/post");
 var userRouter = require("./routes/user");
 var jobRouter = require("./routes/job");
 var recruiterRouter = require("./routes/recruiter");
-var uploadFileRouter = require("./routes/firebase");
+var firebaseRouter = require("./routes/firebase");
 var candidateRouter = require("./routes/candidate");
 
 var app = express();
@@ -58,7 +59,7 @@ app.use("/api/v1", postRouter);
 app.use("/api/v1", userRouter);
 app.use("/api/v1", jobRouter);
 app.use("/api/v1", recruiterRouter);
-app.use("/api/v1", uploadFileRouter);
+app.use("/api/v1", firebaseRouter);
 app.use("/api/v1", candidateRouter);
 
 // catch 404 and forward to error handler
