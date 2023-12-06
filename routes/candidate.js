@@ -5,7 +5,6 @@ const {
   isCaAuthenticated,
   isCandidateAuthenticated,
 } = require("../middlewares/auth");
-const { register } = require("../controllers/user");
 const {
   registerCandidate,
   loginCandidate,

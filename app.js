@@ -5,23 +5,17 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 require("dotenv").config();
 
-
 const mongoose = require("mongoose");
 var cors = require("cors");
 
 //Step2 Write all the routers here
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var postRouter = require("./routes/post");
-var userRouter = require("./routes/user");
 var jobRouter = require("./routes/job");
 var recruiterRouter = require("./routes/recruiter");
 var firebaseRouter = require("./routes/firebase");
 var candidateRouter = require("./routes/candidate");
 
 var app = express();
-
-
 
 // Make Connection with the database
 
@@ -54,9 +48,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Step 3  Using Routes
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/api/v1", postRouter);
-app.use("/api/v1", userRouter);
 app.use("/api/v1", jobRouter);
 app.use("/api/v1", recruiterRouter);
 app.use("/api/v1", firebaseRouter);

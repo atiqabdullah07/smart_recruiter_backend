@@ -1,12 +1,11 @@
 const Jobs = require("../models/jobs");
-const Post = require("../models/posts");
+
 const Recruiters = require("../models/recruiter");
-const User = require("../models/user");
 
 exports.createJob = async (req, res) => {
   try {
     const newJobData = {
-      title: req.body.title,  
+      title: req.body.title,
       Image: {
         public_id: "req.body.public_id",
         url: "req.body.url",
@@ -59,35 +58,6 @@ exports.deleteJob = async (req, res) => {
         message: "Post Deleted",
       });
     }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-exports.updatePost = async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        message: "Post not found",
-      });
-    }
-    if (post.owner.toString() !== req.user._id.toString()) {
-      return res.status(404).json({
-        success: false,
-        message: "Un Authorized User",
-      });
-    }
-    post.title = req.body.title;
-    await post.save();
-    res.status(200).json({
-      success: true,
-      message: "Post Updated",
-    });
   } catch (error) {
     res.status(500).json({
       success: false,
