@@ -74,6 +74,8 @@ exports.registerCandidate = async (req, res) => {
       avatar,
     });
 
+    await candidate.save()
+
     res.status(201).json({ success: true, candidate });
   } catch (error) {
     res.status(500).json({
