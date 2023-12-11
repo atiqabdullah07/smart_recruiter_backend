@@ -6,6 +6,9 @@ exports.createJob = async (req, res) => {
   try {
     const newJobData = {
       title: req.body.title,
+      experienceLevel: req.body.experienceLevel,
+      jobType: req.body.jobType,
+
       Image: {
         public_id: "req.body.public_id",
         url: "req.body.url",
