@@ -8,6 +8,7 @@ exports.createJob = async (req, res) => {
       title: req.body.title,
       experienceLevel: req.body.experienceLevel,
       jobType: req.body.jobType,
+      skills: req.body.skills,
 
       Image: {
         public_id: "req.body.public_id",

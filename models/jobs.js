@@ -18,6 +18,9 @@ var jobSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  skills: {
+    type: [String], // This specifies an array of strings
+  },
   applicants: [
     {
       applicant: {
