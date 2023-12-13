@@ -38,7 +38,7 @@ exports.deleteJob = async (req, res) => {
     if (!job) {
       return res.status(404).json({
         success: false,
-        message: "Post Not Found",
+        message: "Job Not Found",
       });
     }
 
@@ -56,7 +56,7 @@ exports.deleteJob = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "Post Deleted",
+        message: "Job Deleted",
       });
     }
   } catch (error) {
@@ -100,6 +100,29 @@ exports.searchJobs = async (req, res) => {
       success: true,
       jobs,
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getJobById = async (req, res) => {
+  try {
+    const job = await Jobs.findById(req.params.id); // Params.id means the id we'll pass after the url
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job Not Found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      job,
+    });
+    
   } catch (error) {
     res.status(500).json({
       success: false,
