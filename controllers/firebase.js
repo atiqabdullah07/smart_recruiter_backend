@@ -1,4 +1,3 @@
-
 const {
   getStorage,
   ref,
@@ -6,14 +5,17 @@ const {
   getDownloadURL,
 } = require("firebase/storage");
 const multer = require("multer");
-const {GoogleAuthProvider, getAuth, signInWithPopup} = require("firebase/auth");
+const {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+} = require("firebase/auth");
 const { initializeApp } = require("firebase/app");
 const { firebaseConfig } = require("../config/firebase_config");
 
-
 const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
-const auth = getAuth(app)
+const auth = getAuth(app);
 const storage = getStorage();
 
 // Define a file filter function
@@ -35,7 +37,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  fileFilter: fileFilter,
+  //  fileFilter: fileFilter,
 }).single("filename");
 
 const givedateTime = () => {
@@ -103,8 +105,7 @@ exports.uploadFile = async (req, res) => {
   }
 };
 
-
-exports.googleAuth = async (req, res) =>{
+exports.googleAuth = async (req, res) => {
   try {
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -123,4 +124,4 @@ exports.googleAuth = async (req, res) =>{
       message: "Internal server error.",
     });
   }
-}
+};
