@@ -10,10 +10,7 @@ exports.createJob = async (req, res) => {
       jobType: req.body.jobType,
       skills: req.body.skills,
 
-      Image: {
-        public_id: "req.body.public_id",
-        url: "req.body.url",
-      },
+      
       descriptionFile: req.body.descriptionFile,
       owner: req.recruiter._id,
     };
@@ -72,7 +69,7 @@ exports.deleteJob = async (req, res) => {
 
 exports.getAllJobs = async (req, res) => {
   try {
-    const jobs = await Jobs.find();
+    const jobs = await Jobs.find().populate("owner");
 
     res.status(200).json({
       success: true,

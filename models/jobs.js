@@ -6,10 +6,7 @@ var jobSchema = new mongoose.Schema({
   descriptionFile: String,
   jobType: String,
   experienceLevel: String,
-  image: {
-    public_id: String,
-    url: String,
-  },
+  
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Recruiter", // It refers to the Recruiter model that we have created
