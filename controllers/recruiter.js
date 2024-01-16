@@ -57,7 +57,7 @@ exports.logoutRecruiter = async (req, res) => {
 
 exports.registerRecruiter = async (req, res) => {
   try {
-    const { name, email, password, avatar, bio } = req.body;
+    const { name, email, password, avatar } = req.body;
     let recruiter = await Recruiters.findOne({ email });
     if (recruiter) {
       return res.status(400).json({
@@ -71,11 +71,8 @@ exports.registerRecruiter = async (req, res) => {
       email,
       password,
       avatar,
-      bio,
-      // avatar: {
-      //   public_id: "sample_id",
-      //   url: "sample Url",
-      // },
+
+      avatar,
     });
 
     res.status(201).json({ success: true, recruiter });
