@@ -127,3 +127,41 @@ exports.getMyRecruiterProfile = async (req, res) => {
     });
   }
 };
+
+
+exports.resumeAnalysis = async (req, res) => {
+  try {
+    console.log(req.body)
+    const { resumeUrl, jobDescriptionUrl } = req.body;
+
+    // Check if both URLs are provided
+    if (!resumeUrl || !jobDescriptionUrl) {
+      return res.status(400).json({ error: 'Both resumeUrl and jobDescriptionUrl are required.' });
+    }
+
+    // Fetch files from URLs
+    const [resumeFile, jobDescriptionFile] = await Promise.all([
+      fetch(resumeUrl).then(response => response.buffer()),
+      fetch(jobDescriptionUrl).then(response => response.buffer()),
+    ]);
+
+    // Send files to Flask API
+    const flaskApiResponse = await fetch('http://127.0.0.1:5000/api/calculate_similarity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        resumeFile: resumeFile.toString('base64'),
+        jobDescriptionFile: jobDescriptionFile.toString('base64'),
+      }),
+    });
+
+    // Return the response from Flask API
+    const flaskApiResponseJson = await flaskApiResponse.json();
+    res.json(flaskApiResponseJson);
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

@@ -110,7 +110,7 @@ exports.applyOnJob = async (req, res) => {
       });
     }
     job.applicants.push({
-      applicant: req.candidate._id,
+      applicant: req.body.candidateId,//req.candidate._id
       resumeFile: req.body.resumeFile,
     });
 

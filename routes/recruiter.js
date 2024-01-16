@@ -5,6 +5,7 @@ const {
   logoutRecruiter,
   getMyRecruiterProfile,
   updateRecruiterProfile,
+  resumeAnalysis
 } = require("../controllers/recruiter");
 var router = express.Router();
 const { isAuthenticated } = require("../middlewares/auth");
@@ -17,6 +18,7 @@ router.get("/recruiter", function (req, res, next) {
 router.route("/recruiter/register").post(registerRecruiter);
 router.route("/recruiter/login").post(loginRecruiter);
 router.route("/recruiter/logout").get(logoutRecruiter);
+router.route("/recruiter/resumeAnalysis").post(resumeAnalysis);
 router
   .route("/recruiter/updateprofile")
   .put(isAuthenticated, updateRecruiterProfile);
