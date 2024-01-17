@@ -40,12 +40,16 @@ app.set("view engine", "jade");
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors({ origin: "*" }));
-app.use(express.urlencoded({ extended: false }));
+app.use(cors({ credentials:true, origin: "http://localhost:3001" }));
+//app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
-
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Credentials', true);
+  // other headers...
+  next();
+});
 // Step 3  Using Routes
 app.use("/", indexRouter);
 app.use("/api/v1", jobRouter);

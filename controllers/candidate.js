@@ -22,6 +22,7 @@ exports.loginCandidate = async (req, res) => {
       });
     }
     const options = {
+      
       expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       httpOnly: true,
     };
@@ -110,7 +111,7 @@ exports.applyOnJob = async (req, res) => {
       });
     }
     job.applicants.push({
-      applicant: req.body.candidateId,//req.candidate._id
+      applicant: req.candidate._id, //req.body.candidateId
       resumeFile: req.body.resumeFile,
     });
 

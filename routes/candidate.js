@@ -28,6 +28,6 @@ router
 
 router
   .route("/candidate/applyjob/:id")
-  .post(applyOnJob);
+  .post(isCandidateAuthenticated,applyOnJob);
 
 module.exports = router;

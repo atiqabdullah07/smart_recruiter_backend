@@ -23,9 +23,36 @@ exports.isAuthenticated = async (req, res, next) => {
   }
 };
 
+// exports.isCandidateAuthenticated = async (req, res, next) => {
+//   try {
+//     console.log(req.headers)
+//     const tokenHeader = req.headers.authorization;
+
+//     if (!tokenHeader) {
+//       return res.status(401).json({
+//         message: "Please provide a token",
+//       });
+//     }
+
+//     const token = tokenHeader.split(' ')[1];
+
+//     const decoded = await jwt.verify(token, "creatingatestJWTkey");
+
+//     req.candidate = await Candidates.findById(decoded._id);
+
+//     next();
+//   } catch (error) {
+//     res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
+
 exports.isCandidateAuthenticated = async (req, res, next) => {
   try {
-    const { token } = req.cookies;
+    console.log(req.cookies);
+    const {token}  = req.cookies;
+    console.log("token:",token);
     if (!token) {
       return res.status(401).json({
         message: "Please Login First",
