@@ -6,6 +6,7 @@ const {
   getMyRecruiterProfile,
   updateRecruiterProfile,
   resumeAnalysis
+  
 } = require("../controllers/recruiter");
 var router = express.Router();
 const { isAuthenticated } = require("../middlewares/auth");
@@ -25,5 +26,6 @@ router
 router
   .route("/recruiter/myprofile")
   .get(isAuthenticated, getMyRecruiterProfile);
+
 
 module.exports = router;

@@ -126,6 +126,8 @@ exports.getMyRecruiterProfile = async (req, res) => {
 };
 
 
+
+
 exports.resumeAnalysis = async (req, res) => {
   try {
     console.log(req.body)
