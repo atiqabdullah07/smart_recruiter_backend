@@ -103,15 +103,28 @@ exports.getMyCandidateProfile = async (req, res) => {
 
 exports.applyOnJob = async (req, res) => {
   try {
-    const job = await Jobs.findById(req.params.id);
+    const jobId = req.params.id;
+    const candidateId = req.candidate._id;
+    const job = await Jobs.findById(jobId);
     if (!job) {
       return res.status(404).json({
         success: false,
         message: "job Not Found",
       });
     }
+    // Check if the candidate has already applied
+    const isAlreadyApplied = job.applicants.some(
+      (applicant) => String(applicant.applicant) === String(candidateId)
+    );
+
+    if (isAlreadyApplied) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already applied to this job.",
+      });
+    }
     job.applicants.push({
-      applicant: req.candidate._id, //req.body.candidateId
+      applicant: candidateId, 
       resumeFile: req.body.resumeFile,
     });
 
