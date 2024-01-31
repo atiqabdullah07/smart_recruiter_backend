@@ -69,7 +69,7 @@ exports.deleteJob = async (req, res) => {
 
 exports.getAllJobs = async (req, res) => {
   try {
-    const jobs = await Jobs.find();
+    const jobs = await Jobs.find().populate("owner"); 
 
     res.status(200).json({
       success: true,
