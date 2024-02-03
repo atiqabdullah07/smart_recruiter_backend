@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 var jobSchema = new mongoose.Schema({
   title: String,
-  description: String,
+  
   descriptionFile: String,
   jobType: String,
   experienceLevel: String,
