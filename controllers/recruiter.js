@@ -72,7 +72,7 @@ exports.registerRecruiter = async (req, res) => {
       password,
       avatar,
 
-      avatar,
+      
     });
 
     res.status(201).json({ success: true, recruiter });

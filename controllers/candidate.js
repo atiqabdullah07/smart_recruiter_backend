@@ -88,7 +88,7 @@ exports.registerCandidate = async (req, res) => {
 
 exports.getMyCandidateProfile = async (req, res) => {
   try {
-    const candidate = await Candidates.findById(req.recruiter._id);
+    const candidate = await Candidates.findById(req.candidate._id);
     res.status(200).json({
       success: true,
       candidate,
