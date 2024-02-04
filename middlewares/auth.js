@@ -50,9 +50,9 @@ exports.isAuthenticated = async (req, res, next) => {
 
 exports.isCandidateAuthenticated = async (req, res, next) => {
   try {
-    console.log(req.cookies);
+    
     const {token}  = req.cookies;
-    console.log("token:",token);
+   
     if (!token) {
       return res.status(401).json({
         message: "Please Login First",

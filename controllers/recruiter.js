@@ -87,18 +87,22 @@ exports.registerRecruiter = async (req, res) => {
 exports.updateRecruiterProfile = async (req, res) => {
   try {
     const recruiter = await Recruiters.findById(req.recruiter._id);
-    const { name, email } = req.body;
+    const { name, email, avatar } = req.body;
     if (name) {
       recruiter.name = name;
     }
     if (email) {
       recruiter.email = email;
     }
+    if (avatar) {
+      recruiter.avatar = avatar;
+    }
     await recruiter.save();
 
     res.status(200).json({
       success: true,
-      message: "Profile Updated",
+      recruiter,
+      message: "Profile Updated Successfully",
     });
   } catch (error) {
     res.status(500).json({

@@ -2,7 +2,7 @@ var express = require("express");
 
 var router = express.Router();
 const {
-  isCaAuthenticated,
+  
   isCandidateAuthenticated,
 } = require("../middlewares/auth");
 const {
@@ -11,6 +11,7 @@ const {
   getMyCandidateProfile,
   logoutCandidate,
   applyOnJob,
+  updateCandidateProfile,
 } = require("../controllers/candidate");
 
 /* GET users listing. */
@@ -25,6 +26,9 @@ router.route("/candidate/logout").get(logoutCandidate);
 router
   .route("/candidate/myprofile")
   .get(isCandidateAuthenticated, getMyCandidateProfile);
+router
+  .route("/candidate/updateprofile")
+  .put(isCandidateAuthenticated, updateCandidateProfile);
 
 router
   .route("/candidate/applyjob/:id")

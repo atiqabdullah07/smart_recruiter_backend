@@ -4,12 +4,13 @@ const Recruiters = require("../models/recruiter");
 
 exports.createJob = async (req, res) => {
   try {
+    
     const newJobData = {
       title: req.body.title,
       experienceLevel: req.body.experienceLevel,
       jobType: req.body.jobType,
       skills: req.body.skills,
-
+      avatar:req.recruiter.avatar,
       
       descriptionFile: req.body.descriptionFile,
       owner: req.recruiter._id,

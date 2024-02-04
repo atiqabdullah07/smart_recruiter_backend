@@ -86,6 +86,35 @@ exports.registerCandidate = async (req, res) => {
   }
 };
 
+exports.updateCandidateProfile = async (req, res) => {
+  try {
+    const candidate = await Candidates.findById(req.candidate._id);
+    const { name, email, avatar } = req.body;
+    if (name) {
+      candidate.name = name;
+    }
+    if (email) {
+      candidate.email = email;
+    }
+    if (avatar) {
+      candidate.avatar = avatar;
+    }
+    await candidate.save();
+
+    res.status(200).json({
+      success: true,
+      candidate,
+      message: "Profile Updated Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
 exports.getMyCandidateProfile = async (req, res) => {
   try {
     const candidate = await Candidates.findById(req.candidate._id);
