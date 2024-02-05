@@ -18,22 +18,7 @@ const provider = new GoogleAuthProvider();
 const auth = getAuth(app);
 const storage = getStorage();
 
-// Define a file filter function
-const fileFilter = (req, file, cb) => {
-  // Check if the file format is either pdf or docx
-  if (
-    file.mimetype === "application/pdf" ||
-    file.mimetype ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-  ) {
-    cb(null, true); // Accept the file
-  } else {
-    cb(
-      new Error("Invalid file format. Only PDF or DOCX files are allowed."),
-      false
-    ); // Reject the file
-  }
-};
+
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -63,7 +48,14 @@ exports.uploadFile = async (req, res) => {
       const file = req.file;
       const dateTime = givedateTime();
       const storageRef = ref(storage, `files/${dateTime}_${file.originalname}`);
-      const uploadTask = await uploadBytesResumable(storageRef, file.buffer);
+      // Set metadata with the MIME type
+      // Set metadata with the MIME type
+      const metadata = {
+        contentType: file.mimetype,
+      };
+      // Upload file with metadata
+      const uploadTask = await uploadBytesResumable(storageRef, file.buffer, metadata);
+
 
       // Check if uploadTask.snapshot is defined before accessing its properties
       if (uploadTask.ref) {
