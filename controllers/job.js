@@ -111,7 +111,12 @@ exports.searchJobs = async (req, res) => {
 
 exports.getJobById = async (req, res) => {
   try {
-    const job = await Jobs.findById(req.params.id).populate("owner"); // Params.id means the id we'll pass after the url
+    const job = await Jobs.findById(req.params.id).populate(["owner",{
+      path: "applicants",
+      populate: {
+        path: "applicant",
+      }
+    }]); // Params.id means the id we'll pass after the url
     if (!job) {
       return res.status(404).json({
         success: false,
