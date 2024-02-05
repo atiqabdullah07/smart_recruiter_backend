@@ -155,6 +155,7 @@ exports.applyOnJob = async (req, res) => {
     job.applicants.push({
       applicant: candidateId, 
       resumeFile: req.body.resumeFile,
+      resumeAnalysisScore:req.body.resumeAnalysisScore
     });
 
     await job.save();
