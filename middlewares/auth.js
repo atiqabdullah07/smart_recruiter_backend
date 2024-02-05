@@ -15,7 +15,7 @@ exports.isAuthenticated = async (req, res, next) => {
     const decoded = await jwt.verify(token, "creatingatestJWTkey");
 
     req.recruiter = await Recruiters.findById(decoded._id);
-    console.log(req.recruiter)
+    
     if (!req.recruiter) {
       return res.status(401).json({
         message: "Please have a recruiter account first",

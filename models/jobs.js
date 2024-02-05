@@ -27,7 +27,7 @@ var jobSchema = new mongoose.Schema({
       resumeFile: {
         type: String,
       },
-      score: {
+      resumeAnalysisScore: {
         type: String,
       },
     },
