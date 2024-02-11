@@ -170,3 +170,39 @@ exports.applyOnJob = async (req, res) => {
     });
   }
 };
+exports.alreadyApplyOnJob = async (req, res) => {
+  try {
+    const {jobId} = req.body;
+    const candidateId = req.candidate._id;
+    const job = await Jobs.findById(jobId);
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "job Not Found",
+      });
+    }
+    // Check if the candidate has already applied
+    const isAlreadyApplied = job.applicants.some(
+      (applicant) => String(applicant.applicant) === String(candidateId)
+    );
+
+    if (isAlreadyApplied) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already applied to this job.",
+      });
+    }
+    
+
+    
+    return res.status(200).json({
+      success: true,
+      message: "You can apply on the Job",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

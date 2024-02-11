@@ -1,10 +1,10 @@
 var express = require("express");
-
 var router = express.Router();
+
 const {
-  
   isCandidateAuthenticated,
 } = require("../middlewares/auth");
+
 const {
   registerCandidate,
   loginCandidate,
@@ -12,6 +12,7 @@ const {
   logoutCandidate,
   applyOnJob,
   updateCandidateProfile,
+  alreadyApplyOnJob,
 } = require("../controllers/candidate");
 
 /* GET users listing. */
@@ -33,5 +34,8 @@ router
 router
   .route("/candidate/applyjob/:id")
   .post(isCandidateAuthenticated,applyOnJob);
+router
+  .route("/candidate/alreadyApplyJob")
+  .post(isCandidateAuthenticated,alreadyApplyOnJob);
 
 module.exports = router;
