@@ -13,6 +13,7 @@ const {
   applyOnJob,
   updateCandidateProfile,
   alreadyApplyOnJob,
+  myAppliedJobs,
 } = require("../controllers/candidate");
 
 /* GET users listing. */
@@ -37,5 +38,8 @@ router
 router
   .route("/candidate/alreadyApplyJob")
   .post(isCandidateAuthenticated,alreadyApplyOnJob);
+router
+  .route("/candidate/myAppliedJobs")
+  .get(isCandidateAuthenticated,myAppliedJobs);
 
 module.exports = router;
