@@ -1,5 +1,8 @@
 const Candidates = require("../models/candidate");
 const Jobs = require("../models/jobs");
+const axios = require("axios")
+
+
 
 exports.loginCandidate = async (req, res) => {
   try {
@@ -78,6 +81,64 @@ exports.registerCandidate = async (req, res) => {
     await candidate.save()
 
     res.status(201).json({ success: true, candidate });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.continueWithGoogle = async (req, res) => {
+  try {
+    const {googleAccessToken} = req.body;
+    console.log(googleAccessToken)
+
+    axios
+        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+
+          headers: {
+              "Authorization": `Bearer ${googleAccessToken}`
+          }
+        })
+        .then(async response => {
+            const name = response.data.name;
+            const email = response.data.email;
+            const avatar = response.data.picture;
+
+            let candidate = await Candidates.findOne({ email });
+            if (candidate===null) {
+              //Create new Candidate
+              candidate = await Candidates.create({
+                name,
+                email,
+                avatar,
+              });
+  
+              await candidate.save()
+              
+            }
+            const options = {
+              
+              expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+              httpOnly: true,
+            };
+            const token = await candidate.generateToken();
+            res.status(200).cookie("token", token, options).json({
+              success: true,
+              candidate,
+              token,
+            });
+
+
+           
+            
+        })
+        .catch(err => {
+            res
+                .status(400)
+                .json({message: "Invalid access token!"})
+        })
+    
   } catch (error) {
     res.status(500).json({
       success: false,

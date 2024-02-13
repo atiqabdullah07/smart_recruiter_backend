@@ -4,7 +4,7 @@ var express = require("express");
 var router = express.Router();
   
 router.route("/uploadFile").post(uploadFile);
-router.route("/googleAuth").post(googleAuth);
+router.route("/googleAuth").get(googleAuth);
 
 module.exports = router;
   
