@@ -5,17 +5,11 @@ const {
   getDownloadURL,
 } = require("firebase/storage");
 const multer = require("multer");
-const {
-  GoogleAuthProvider,
-  getAuth,
-  signInWithPopup,
-} = require("firebase/auth");
+
 const { initializeApp } = require("firebase/app");
 const { firebaseConfig } = require("../config/firebase_config");
 
 const app = initializeApp(firebaseConfig);
-const provider = new GoogleAuthProvider();
-const auth = getAuth(app);
 const storage = getStorage();
 
 
@@ -97,23 +91,4 @@ exports.uploadFile = async (req, res) => {
   }
 };
 
-exports.googleAuth = async (req, res) => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-    const user = result.user;
-    res.status(200).json({
-      success: true,
-      message: "User logged in successfully",
-      token: token,
-      user: user,
-    });
-  } catch (error) {
-    console.error("Error during Google authentication:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error.",
-    });
-  }
-};
+
