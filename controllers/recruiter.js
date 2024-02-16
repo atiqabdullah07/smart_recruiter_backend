@@ -1,5 +1,7 @@
 const Recruiters = require("../models/recruiter");
 const axios = require("axios")
+const { sendEmail } = require("../middlewares/sendEmail");
+const crypto = require("crypto");
 
 exports.loginRecruiter = async (req, res) => {
   try {
@@ -85,6 +87,74 @@ exports.registerRecruiter = async (req, res) => {
   }
 };
 
+exports.forgetPassword = async (req,res)=>{
+  try {
+    const {email} = req.body;
+    const recruiter = await Recruiters.findOne({email});
+    if(!recruiter){
+      return res.status(400).json({
+        success: false,
+        message: "User with this email does not exists",
+      });
+    }
+    const resetToken = await recruiter.getResetPasswordToken();
+    await recruiter.save()
+    await sendEmail({
+      email: recruiter.email,
+      subject: "Reset Password",
+      message: `Click on the link below to reset your password. ${process.env.NEXTJS_FRONTEND_URL}/resetpassword/${resetToken} .
+       If you have not requested this email then please ignore it.
+       
+       Regards
+       Team Smart Recruiter`,
+    })
+    res.status(200).json({
+      success: true,
+      resetToken,
+      message: `Reset Password Token Sent to ${email}`,
+    });
+  }   
+  catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+exports.resetPassword = async (req,res)=>{
+  try {
+    const {password} = req.body;
+    const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+    
+    const user = await Recruiters.findOne({
+      resetPasswordToken,
+      resetPasswordDate: { $gt: Date.now() },
+    });
+    console.log(user)
+  
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Reset Password Token is invalid or has been expired",
+      });
+    }
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordDate = undefined;
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Password Updated Successfully",
+    });
+  }catch(err){
+    console.log(err);
+    res.sendStatus(400);
+  }
+};
+
 exports.updateRecruiterProfile = async (req, res) => {
   try {
     const recruiter = await Recruiters.findById(req.recruiter._id);
@@ -150,7 +220,7 @@ exports.continueWithGoogle = async (req, res) => {
             let recruiter = await Recruiters.findOne({ email });
             console.log(recruiter)
             if (recruiter===null) {
-              //Create new Candidate
+              //Create new recruiter
               recruiter = await Recruiters.create({
                 name,
                 email,

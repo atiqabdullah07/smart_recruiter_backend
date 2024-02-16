@@ -55,19 +55,6 @@ candidateSchema.methods.getResetPasswordToken = function () {
 
   return resetToken;
 };
-candidateSchema.methods.compareResetPasswordToken = async function (token) {
-  console.log("token: ",token);
-  console.log("Reset Password Token: ",this.resetPasswordToken);
-  const resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
-  const user = await Candidates.findOne({
-    resetPasswordToken,
-    resetPasswordDate: { $gt: Date.now() },
-  });
-  return user;
-}
 
 const Candidates = mongoose.model("Candidate", candidateSchema);
 
