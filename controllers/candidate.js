@@ -186,7 +186,6 @@ exports.forgetPassword = async (req,res)=>{
       });
     }
     const resetToken = await candidate.getResetPasswordToken();
-    
     await sendEmail({
       email: candidate.email,
       subject: "Reset Password",

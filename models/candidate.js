@@ -46,7 +46,7 @@ candidateSchema.methods.generateToken = function () {
 
 candidateSchema.methods.getResetPasswordToken = function () {
   const resetToken = crypto.randomBytes(20).toString("hex");
-  console.log(resetToken);
+  //console.log(resetToken);
   this.resetPasswordToken = crypto
     .createHash("sha256")
     .update(resetToken)
