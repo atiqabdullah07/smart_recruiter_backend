@@ -51,7 +51,7 @@ candidateSchema.methods.getResetPasswordToken = function () {
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-  this.resetPasswordDate = Date.now() + 10 * 6 * 1000; // 10 mins
+  this.resetPasswordDate = Date.now() + 10 * 60 * 1000; // 10 mins
 
   return resetToken;
 };

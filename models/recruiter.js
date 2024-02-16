@@ -21,6 +21,9 @@ var recruiterSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+    //required: [true, "Please enter a password"],
+    //minLength: [6, "Password must be atleast 6 chars"],
+    select: false, // Means when we'll Access user's data we'll get all user information except this (i.e Password)
   },
   jobs: [
     {
@@ -57,7 +60,7 @@ recruiterSchema.methods.getResetPasswordToken = function () {
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-  this.resetPasswordDate = Date.now() + 10 * 6 * 1000; // 10 mins
+  this.resetPasswordDate = Date.now() + 10 * 60 * 1000; // 10 mins
 
   return resetToken;
 };

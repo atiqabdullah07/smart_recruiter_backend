@@ -1,3 +1,4 @@
+const { sendEmail } = require("../middlewares/sendEmail");
 const Candidates = require("../models/candidate");
 const Jobs = require("../models/jobs");
 const axios = require("axios")
@@ -174,7 +175,36 @@ exports.updateCandidateProfile = async (req, res) => {
     });
   }
 };
-
+exports.forgetPassword = async (req,res)=>{
+  try {
+    const {email} = req.body;
+    const candidate = await Candidates.findOne({email});
+    if(!candidate){
+      return res.status(400).json({
+        success: false,
+        message: "User with this email does not exists",
+      });
+    }
+    const resetToken = await candidate.getResetPasswordToken();
+    
+    await sendEmail({
+      email: candidate.email,
+      subject: "Reset Password",
+      message: `Click on the link below to reset your password. ${process.env.NEXTJS_FRONTEND_URL}/resetpassword/${resetToken} . If you have not requested this email then please ignore it`,
+    })
+    res.status(200).json({
+      success: true,
+      resetToken,
+      message: `Reset Password Token Sent to ${email}`,
+    });
+  }   
+  catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 
 exports.getMyCandidateProfile = async (req, res) => {
   try {
