@@ -14,7 +14,8 @@ const {
   updateCandidateProfile,
   alreadyApplyOnJob,
   myAppliedJobs,
-  continueWithGoogle
+  continueWithGoogle,
+  forgetPassword
 } = require("../controllers/candidate");
 
 /* GET users listing. */
@@ -27,8 +28,10 @@ router.route("/candidate/login").post(loginCandidate);
 router.route("/candidate/logout").get(logoutCandidate);
 
 //Google Auth
-
 router.route("/candidate/continueWithGoogle").post(continueWithGoogle)
+
+//Forget Password
+router.route("/candidate/forgetpassword").post(forgetPassword)
 
 router
   .route("/candidate/myprofile")
