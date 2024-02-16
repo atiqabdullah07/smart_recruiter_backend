@@ -15,7 +15,8 @@ const {
   alreadyApplyOnJob,
   myAppliedJobs,
   continueWithGoogle,
-  forgetPassword
+  forgetPassword,
+  resetPassword
 } = require("../controllers/candidate");
 
 /* GET users listing. */
@@ -32,6 +33,8 @@ router.route("/candidate/continueWithGoogle").post(continueWithGoogle)
 
 //Forget Password
 router.route("/candidate/forgetpassword").post(forgetPassword)
+//Reset Password
+router.route("/candidate/resetpassword/:token").post(resetPassword)
 
 router
   .route("/candidate/myprofile")

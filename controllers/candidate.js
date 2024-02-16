@@ -2,6 +2,7 @@ const { sendEmail } = require("../middlewares/sendEmail");
 const Candidates = require("../models/candidate");
 const Jobs = require("../models/jobs");
 const axios = require("axios")
+const crypto = require("crypto");
 
 
 
@@ -186,6 +187,7 @@ exports.forgetPassword = async (req,res)=>{
       });
     }
     const resetToken = await candidate.getResetPasswordToken();
+    await candidate.save()
     await sendEmail({
       email: candidate.email,
       subject: "Reset Password",
@@ -204,6 +206,39 @@ exports.forgetPassword = async (req,res)=>{
     });
   }
 }
+exports.resetPassword = async (req,res)=>{
+  try {
+    const {password} = req.body;
+    const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+    
+    const user = await Candidates.findOne({
+      resetPasswordToken,
+      resetPasswordDate: { $gt: Date.now() },
+    });
+    console.log(user)
+  
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Reset Password Token is invalid or has been expired",
+      });
+    }
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordDate = undefined;
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Password Updated Successfully",
+    });
+  }catch(err){
+    console.log(err);
+    res.sendStatus(400);
+  }
+};
 
 exports.getMyCandidateProfile = async (req, res) => {
   try {
