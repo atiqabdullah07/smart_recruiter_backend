@@ -194,6 +194,7 @@ exports.forgetPassword = async (req,res)=>{
       message: `Use the following password verification code to change your password.This code is valid only for 10 mins. Your password reset code is: ${resetToken} If you have not requested this email then please ignore it`,
 
     })
+    console.log(resetToken);
     res.status(200).json({
       success: true,
       resetToken,
@@ -214,7 +215,7 @@ exports.resetPassword = async (req,res)=>{
     // .createHash("sha256")
     // .update(req.params.token)
     // .digest("hex");
-    
+    console.log(resetPasswordToken)
     const user = await Candidates.findOne({
       resetPasswordToken,
       resetPasswordDate: { $gt: Date.now() },
