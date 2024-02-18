@@ -52,8 +52,14 @@ candidateSchema.methods.getResetPasswordCode = function () {
   //   .update(resetToken)
   //   .digest("hex");
   // this.resetPasswordDate = Date.now() + 10 * 60 * 1000; // 10 mins
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += Math.floor(Math.random() * 10); // Generate a random digit between 0 and 9
+  }
+  this.resetPasswordToken = code;
+  this.resetPasswordDate = Date.now() + 10 * 60 * 1000; // 10 mins
 
-  return resetToken;
+  return code;
 };
 
 const Candidates = mongoose.model("Candidate", candidateSchema);

@@ -196,6 +196,7 @@ exports.forgetPassword = async (req,res)=>{
     })
     res.status(200).json({
       success: true,
+      resetToken,
       message: `Reset password code sent to ${email}`,
     });
   }   
@@ -208,11 +209,11 @@ exports.forgetPassword = async (req,res)=>{
 }
 exports.resetPassword = async (req,res)=>{
   try {
-    const {password} = req.body;
-    const resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex");
+    const {resetPasswordToken} = req.body;
+    // const resetPasswordToken = crypto
+    // .createHash("sha256")
+    // .update(req.params.token)
+    // .digest("hex");
     
     const user = await Candidates.findOne({
       resetPasswordToken,
@@ -226,13 +227,13 @@ exports.resetPassword = async (req,res)=>{
         message: "Reset Password Token is invalid or has been expired",
       });
     }
-    user.password = password;
+    // user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordDate = undefined;
     await user.save();
     res.status(200).json({
       success: true,
-      message: "Password Updated Successfully",
+      message: "Token Verified",
     });
   }catch(err){
     console.log(err);

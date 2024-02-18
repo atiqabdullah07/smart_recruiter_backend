@@ -34,7 +34,7 @@ router.route("/candidate/continueWithGoogle").post(continueWithGoogle)
 //Forget Password
 router.route("/candidate/forgetpassword").post(forgetPassword)
 //Reset Password
-router.route("/candidate/resetpassword/:token").put(resetPassword)
+router.route("/candidate/resetpassword").post(resetPassword)
 
 router
   .route("/candidate/myprofile")
