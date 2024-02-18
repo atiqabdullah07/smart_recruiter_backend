@@ -44,14 +44,14 @@ candidateSchema.methods.generateToken = function () {
   return jwt.sign({ _id: this._id }, "creatingatestJWTkey");
 };
 
-candidateSchema.methods.getResetPasswordToken = function () {
-  const resetToken = crypto.randomBytes(20).toString("hex");
-  //console.log(resetToken);
-  this.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
-  this.resetPasswordDate = Date.now() + 10 * 60 * 1000; // 10 mins
+candidateSchema.methods.getResetPasswordCode = function () {
+  // const resetToken = crypto.randomBytes(20).toString("hex");
+  // //console.log(resetToken);
+  // this.resetPasswordToken = crypto
+  //   .createHash("sha256")
+  //   .update(resetToken)
+  //   .digest("hex");
+  // this.resetPasswordDate = Date.now() + 10 * 60 * 1000; // 10 mins
 
   return resetToken;
 };

@@ -186,17 +186,17 @@ exports.forgetPassword = async (req,res)=>{
         message: "User with this email does not exists",
       });
     }
-    const resetToken = await candidate.getResetPasswordToken();
+    const resetToken = await candidate.getResetPasswordCode();
     await candidate.save()
     await sendEmail({
       email: candidate.email,
       subject: "Reset Password",
-      message: `Click on the link below to reset your password. ${process.env.NEXTJS_FRONTEND_URL}/resetpassword/${resetToken} . If you have not requested this email then please ignore it`,
+      message: `Use the following password verification code to change your password.This code is valid only for 10 mins. Your password reset code is: ${resetToken} If you have not requested this email then please ignore it`,
+
     })
     res.status(200).json({
       success: true,
-      resetToken,
-      message: `Reset Password Token Sent to ${email}`,
+      message: `Reset password code sent to ${email}`,
     });
   }   
   catch (error) {
