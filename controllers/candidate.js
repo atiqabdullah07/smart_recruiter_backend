@@ -245,6 +245,8 @@ exports.resetPassword = async (req,res)=>{
 exports.setNewPassword = async (req,res)=>{
   try {
     const {email,password} = req.body;
+    console.log(email)
+    console.log(password)
     const candidate = await Candidates.findOne({ email });
     candidate.password = password
     await candidate.save()
