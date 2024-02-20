@@ -94,24 +94,30 @@ exports.forgetPassword = async (req,res)=>{
     if(!recruiter){
       return res.status(400).json({
         success: false,
-        message: "User with this email does not exists",
+        message: "Recruiter with this email does not exists",
       });
     }
-    const resetToken = await recruiter.getResetPasswordToken();
+    const resetToken = await recruiter.getResetPasswordCode();
     await recruiter.save()
     await sendEmail({
       email: recruiter.email,
-      subject: "Reset Password",
-      message: `Click on the link below to reset your password. ${process.env.NEXTJS_FRONTEND_URL}/resetpassword/${resetToken} .
-       If you have not requested this email then please ignore it.
-       
-       Regards
-       Team Smart Recruiter`,
+      subject: "Verification Code",
+      message: `Dear ${recruiter.name},
+    
+    Please use the following verification code to proceed with your account reset password request:
+    
+    Verification Code: ${resetToken}
+    
+    If you did not request this code, please ignore this email.
+        
+    Regards,
+    Team Smart Recruiter`,
     })
+    
     res.status(200).json({
       success: true,
       resetToken,
-      message: `Reset Password Token Sent to ${email}`,
+      message: `Reset password verification code sent to ${email}`,
     });
   }   
   catch (error) {
@@ -123,11 +129,8 @@ exports.forgetPassword = async (req,res)=>{
 }
 exports.resetPassword = async (req,res)=>{
   try {
-    const {password} = req.body;
-    const resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex");
+    const {resetPasswordToken} = req.body;
+    
     
     const user = await Recruiters.findOne({
       resetPasswordToken,
@@ -138,22 +141,42 @@ exports.resetPassword = async (req,res)=>{
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Reset Password Token is invalid or has been expired",
+        message: "Reset password verification code is invalid or has been expired",
       });
     }
-    user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordDate = undefined;
     await user.save();
     res.status(200).json({
       success: true,
-      message: "Password Updated Successfully",
+      email:user.email, //user email to use for new password reset
+      message: "Code verified successfully",
+
     });
   }catch(err){
     console.log(err);
     res.sendStatus(400);
   }
 };
+exports.setNewPassword = async (req,res)=>{
+  try {
+    const {email,password} = req.body;
+    console.log(email)
+    console.log(password)
+    const recruiter = await Recruiters.findOne({ email });
+    recruiter.password = password
+    await recruiter.save()
+    res.status(200).json({
+      success: true,
+      message: "Password Reset Successfully",
+    });
+  }catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 
 exports.updateRecruiterProfile = async (req, res) => {
   try {

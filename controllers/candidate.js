@@ -183,7 +183,7 @@ exports.forgetPassword = async (req,res)=>{
     if(!candidate){
       return res.status(400).json({
         success: false,
-        message: "User with this email does not exists",
+        message: "Candidate with this email does not exists",
       });
     }
     const resetToken = await candidate.getResetPasswordCode();
@@ -198,7 +198,7 @@ exports.forgetPassword = async (req,res)=>{
     res.status(200).json({
       success: true,
       resetToken,
-      message: `Reset password code sent to ${email}`,
+      message: `Reset password verification code sent to ${email}`,
     });
   }   
   catch (error) {
@@ -225,7 +225,7 @@ exports.resetPassword = async (req,res)=>{
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Reset Password Token is invalid or has been expired",
+        message: "Reset password verification code is invalid or has been expired",
       });
     }
     // user.password = password;

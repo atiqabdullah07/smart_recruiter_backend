@@ -53,7 +53,7 @@ recruiterSchema.methods.generateToken = function () {
   return jwt.sign({ _id: this._id }, "creatingatestJWTkey");
 };
 
-recruiterSchema.methods.getResetPasswordToken = function () {
+recruiterSchema.methods.getResetPasswordCode = function () {
   let code = '';
   for (let i = 0; i < 6; i++) {
     code += Math.floor(Math.random() * 10); // Generate a random digit between 0 and 9
