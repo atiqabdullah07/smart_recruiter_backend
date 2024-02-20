@@ -8,7 +8,8 @@ const {
   resumeAnalysis,
   continueWithGoogle,
   forgetPassword,
-  resetPassword
+  resetPassword,
+  setNewPassword
   
 } = require("../controllers/recruiter");
 var router = express.Router();
@@ -25,8 +26,10 @@ router.route("/recruiter/continueWithGoogle").post(continueWithGoogle)
 
 //Forget Password
 router.route("/recruiter/forgetpassword").post(forgetPassword)
-//Reset Password
-router.route("/recruiter/resetpassword/:token").put(resetPassword)
+//Verify Reset Password 6 digit Code
+router.route("/recruiter/resetpassword").post(resetPassword)
+//Set New Password
+router.route("/recruiter/setnewpassword").put(setNewPassword)
 
 router.route("/recruiter/logout").get(logoutRecruiter);
 router.route("/recruiter/resumeAnalysis").post(resumeAnalysis);
