@@ -234,13 +234,31 @@ exports.resetPassword = async (req,res)=>{
     await user.save();
     res.status(200).json({
       success: true,
-      message: "Token Verified",
+      email:user.email, //user email to use for new password reset
+      message: "Password reset code verified successfully",
     });
   }catch(err){
     console.log(err);
     res.sendStatus(400);
   }
 };
+exports.setNewPassword = async (req,res)=>{
+  try {
+    const {email,password} = req.body;
+    const candidate = await Candidates.findOne({ email });
+    candidate.password = password
+    await candidate.save()
+    res.status(200).json({
+      success: true,
+      message: "Password Reset Successfully",
+    });
+  }catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 
 exports.getMyCandidateProfile = async (req, res) => {
   try {
