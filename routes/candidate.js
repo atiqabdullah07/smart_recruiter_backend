@@ -37,7 +37,7 @@ router.route("/candidate/forgetpassword").post(forgetPassword)
 //Verify Reset Password 6 digit Code
 router.route("/candidate/resetpassword").post(resetPassword)
 //Set New Password
-router.route("/candidate/setnewpassword").post(setNewPassword)
+router.route("/candidate/setnewpassword").put(setNewPassword)
 
 router
   .route("/candidate/myprofile")
