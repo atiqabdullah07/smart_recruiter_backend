@@ -26,7 +26,7 @@ router.route("/recruiter/continueWithGoogle").post(continueWithGoogle)
 
 //Forget Password
 router.route("/recruiter/forgetpassword").post(forgetPassword)
-//Verify Reset Password 6 digit Code
+//Verify Reset Password 6 digit Code that was sent to email
 router.route("/recruiter/resetpassword").post(resetPassword)
 //Set New Password
 router.route("/recruiter/setnewpassword").put(setNewPassword)
