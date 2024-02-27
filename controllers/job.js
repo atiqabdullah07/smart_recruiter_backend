@@ -18,6 +18,7 @@ exports.createJob = async (req, res) => {
       jobType: req.body.jobType,
       skills: req.body.skills,
       interviewQuestions: req.body.interviewQuestions,
+      interviewQuestionsVideos: videoIds,
       avatar:req.recruiter.avatar,
       descriptionFile: req.body.descriptionFile,
       owner: req.recruiter._id,
