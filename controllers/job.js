@@ -4,26 +4,34 @@ const Recruiters = require("../models/recruiter");
 
 exports.createJob = async (req, res) => {
   try {
-    
-    const newJobData = {
-      title: req.body.title,
-      experienceLevel: req.body.experienceLevel,
-      jobType: req.body.jobType,
-      skills: req.body.skills,
-      avatar:req.recruiter.avatar,
+    if(req.body.interviewQuestions){
+      console.log(req.body.interviewQuestions)
+      const interviewQuestions=req.body.interviewQuestions
       
-      descriptionFile: req.body.descriptionFile,
-      owner: req.recruiter._id,
-    };
-    const newJob = await Jobs.create(newJobData);
-    const recruiter = await Recruiters.findById(req.recruiter._id);
-    recruiter.jobs.push(newJob._id);
-    await recruiter.save();
+      const videoURLs = await generateInterviewQuestionVideos(interviewQuestions)
+      console.log(videoURLs)
+      
+    }
+    
+    // const newJobData = {
+    //   title: req.body.title,
+    //   experienceLevel: req.body.experienceLevel,
+    //   jobType: req.body.jobType,
+    //   skills: req.body.skills,
+    //   interviewQuestions: req.body.interviewQuestions,
+    //   avatar:req.recruiter.avatar,
+    //   descriptionFile: req.body.descriptionFile,
+    //   owner: req.recruiter._id,
+    // };
+    // const newJob = await Jobs.create(newJobData);
+    // const recruiter = await Recruiters.findById(req.recruiter._id);
+    // recruiter.jobs.push(newJob._id);
+    // await recruiter.save();
 
-    res.status(201).json({
-      success: true,
-      job: newJob,
-    });
+    // res.status(201).json({
+    //   success: true,
+    //   job: newJob,
+    // });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -31,6 +39,78 @@ exports.createJob = async (req, res) => {
     });
     console.log(error);
   }
+};
+// const interviewQuestions = [
+//   "Briefly Introduce Yourself",
+//   "What is MongoDB and how does it differ from traditional SQL databases?",
+//   "Explain the concept of Virtual DOM in React.js.",
+//   "How do you connect a React.js frontend to a Node.js backend?",
+//   "Describe the architecture of a MERN stack application."
+// ]
+const generateInterviewQuestionVideos = async (interviewQuestions) => {
+  const videoURLs = [];
+
+  for (const question of interviewQuestions) {
+      try {
+          const options = {
+              method: 'POST',
+              headers: {
+                  accept: 'application/json',
+                  'content-type': 'application/json',
+                  'x-api-key': 'NGE4OTQyOGEwZDJmNGI1MDlkYWRjNzA4MmQ0MGM0OWUtMTcwOTAxODUzOA=='
+              },
+              body: JSON.stringify({
+                  test: true,
+                  caption: false,
+                  title: 'Interview',
+                  dimension: { width: 1920, height: 1080 },
+                  video_inputs: [
+                      {
+                          character: {
+                              type: 'avatar',
+                              avatar_id: 'Anna_public_3_20240108',
+                              scale: 1,
+                              avatar_style: 'closeUp',
+                          },
+                          voice: {
+                              type: "text",
+                              voice_id: "1bd001e7e50f421d891986aad5158bc8",
+                              input_text: question
+                          },
+                          background: {
+                              type: "color",
+                              value: '#ffffff'
+                          }
+                      }
+                  ]
+              })
+          };
+
+          const response = await fetch('https://api.heygen.com/v2/video/generate', options);
+          const responseData = await response.json();
+
+          console.log(responseData);
+          const videoId = responseData.data.video_id;
+
+          const videoOptions = {
+              method: 'GET',
+              headers: {
+                  accept: 'application/json',
+                  'x-api-key': 'NGE4OTQyOGEwZDJmNGI1MDlkYWRjNzA4MmQ0MGM0OWUtMTcwOTAxODUzOA=='
+              }
+          };
+
+          const videoResponse = await fetch(`https://api.heygen.com/v1/video_status.get?video_id=${videoId}`, videoOptions);
+          const videoData = await videoResponse.json();
+
+          console.log(videoData);
+          videoURLs.push(videoData.data.video_url);
+      } catch (error) {
+          console.error(error);
+      }
+  }
+
+  return videoURLs;
 };
 
 exports.deleteJob = async (req, res) => {
