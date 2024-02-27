@@ -21,6 +21,9 @@ var jobSchema = new mongoose.Schema({
   interviewQuestions:{
     type: [String], // This specifies an array of string interview Questions
   },
+  interviewQuestionsVideos:{
+    type: [String],
+  },
   applicants: [
     {
       applicant: {

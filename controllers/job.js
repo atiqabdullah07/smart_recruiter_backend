@@ -4,34 +4,39 @@ const Recruiters = require("../models/recruiter");
 
 exports.createJob = async (req, res) => {
   try {
-    if(req.body.interviewQuestions){
-      console.log(req.body.interviewQuestions)
-      const interviewQuestions=req.body.interviewQuestions
-      
-      const videoURLs = await generateInterviewQuestionVideos(interviewQuestions)
-      console.log(videoURLs)
-      
-    }
     
-    // const newJobData = {
-    //   title: req.body.title,
-    //   experienceLevel: req.body.experienceLevel,
-    //   jobType: req.body.jobType,
-    //   skills: req.body.skills,
-    //   interviewQuestions: req.body.interviewQuestions,
-    //   avatar:req.recruiter.avatar,
-    //   descriptionFile: req.body.descriptionFile,
-    //   owner: req.recruiter._id,
-    // };
-    // const newJob = await Jobs.create(newJobData);
-    // const recruiter = await Recruiters.findById(req.recruiter._id);
-    // recruiter.jobs.push(newJob._id);
-    // await recruiter.save();
+    const videoIds = await generateInterviewQuestionVideos(req.body.interviewQuestions)
+    console.log("Video IDs Retrieved")
+    console.log(videoIds)
+    
+    // console.log("Retrieving Video URLs from IDs");
+    // const videoURLs = await retrieveInterviewQuestionVideos(videoIds)
+    // console.log(videoURLs)
+    const newJobData = {
+      title: req.body.title,
+      experienceLevel: req.body.experienceLevel,
+      jobType: req.body.jobType,
+      skills: req.body.skills,
+      interviewQuestions: req.body.interviewQuestions,
+      avatar:req.recruiter.avatar,
+      descriptionFile: req.body.descriptionFile,
+      owner: req.recruiter._id,
+    };
+    const newJob = await Jobs.create(newJobData);
+    const recruiter = await Recruiters.findById(req.recruiter._id);
+    recruiter.jobs.push(newJob._id);
+    
+    await recruiter.save();
+    
+    res.status(201).json({
+      success: true,
+      job: newJob,
+    });
+    
+    
+    
 
-    // res.status(201).json({
-    //   success: true,
-    //   job: newJob,
-    // });
+    
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -41,14 +46,14 @@ exports.createJob = async (req, res) => {
   }
 };
 // const interviewQuestions = [
-//   "Briefly Introduce Yourself",
-//   "What is MongoDB and how does it differ from traditional SQL databases?",
-//   "Explain the concept of Virtual DOM in React.js.",
-//   "How do you connect a React.js frontend to a Node.js backend?",
-//   "Describe the architecture of a MERN stack application."
+  // "Briefly Introduce Yourself",
+  // "What is MongoDB and how does it differ from traditional SQL databases?",
+  // "Explain the concept of Virtual DOM in React.js.",
+  // "How do you connect a React.js frontend to a Node.js backend?",
+  // "Describe the architecture of a MERN stack application."
 // ]
 const generateInterviewQuestionVideos = async (interviewQuestions) => {
-  const videoURLs = [];
+  const videoIds = [];
 
   for (const question of interviewQuestions) {
       try {
@@ -57,7 +62,7 @@ const generateInterviewQuestionVideos = async (interviewQuestions) => {
               headers: {
                   accept: 'application/json',
                   'content-type': 'application/json',
-                  'x-api-key': 'NGE4OTQyOGEwZDJmNGI1MDlkYWRjNzA4MmQ0MGM0OWUtMTcwOTAxODUzOA=='
+                  'x-api-key': process.env.HEY_GEN_API_M
               },
               body: JSON.stringify({
                   test: true,
@@ -91,27 +96,41 @@ const generateInterviewQuestionVideos = async (interviewQuestions) => {
 
           console.log(responseData);
           const videoId = responseData.data.video_id;
+          videoIds.push(videoId)
 
-          const videoOptions = {
-              method: 'GET',
-              headers: {
-                  accept: 'application/json',
-                  'x-api-key': 'NGE4OTQyOGEwZDJmNGI1MDlkYWRjNzA4MmQ0MGM0OWUtMTcwOTAxODUzOA=='
-              }
-          };
-
-          const videoResponse = await fetch(`https://api.heygen.com/v1/video_status.get?video_id=${videoId}`, videoOptions);
-          const videoData = await videoResponse.json();
-
-          console.log(videoData);
-          videoURLs.push(videoData.data.video_url);
+          
       } catch (error) {
           console.error(error);
       }
   }
 
-  return videoURLs;
+  return videoIds;
 };
+const retrieveInterviewQuestionVideos = async (videoIds) => {
+  const videoURLs = []
+  for (let i = 0; i < videoIds.length; i++) {
+    
+    try{
+      const videoOptions = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            'x-api-key': process.env.HEY_GEN_API_M
+        }
+    };
+
+    const videoResponse =await fetch(`https://api.heygen.com/v1/video_status.get?video_id=${videoIds[i]}`, videoOptions);
+    const videoData = await videoResponse.json();
+
+    console.log(videoData);
+    videoURLs.push(videoData.data.video_url);
+
+    }catch(err){
+      console.log(err)
+    }
+  }
+  return videoURLs
+}
 
 exports.deleteJob = async (req, res) => {
   try {
