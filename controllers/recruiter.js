@@ -297,7 +297,7 @@ exports.resumeAnalysis = async (req, res) => {
    
 
     // Send files to Flask API
-    const flaskApiResponse = await fetch('http://127.0.0.1:5000/api/calculate_similarity', {
+    const flaskApiResponse = await fetch(`${process.env.FLASK_URL}/api/calculate_similarity`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
