@@ -190,7 +190,7 @@ exports.searchJobs = async (req, res) => {
       });
     }
 
-    const jobs = await Jobs.find({ title: { $regex: new RegExp(title, "i") } });
+    const jobs = await Jobs.find({ title: { $regex: new RegExp(title, "i") } }).populate("owner");
 
     res.status(200).json({
       success: true,

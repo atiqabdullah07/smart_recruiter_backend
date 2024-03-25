@@ -305,6 +305,7 @@ exports.applyOnJob = async (req, res) => {
       resumeAnalysisScore:req.body.resumeAnalysisScore
     });
 
+    
     await job.save();
     return res.status(200).json({
       success: true,
