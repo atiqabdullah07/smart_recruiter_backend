@@ -57,7 +57,7 @@ const generateInterviewQuestionVideos = async (interviewQuestions) => {
               headers: {
                   accept: 'application/json',
                   'content-type': 'application/json',
-                  'x-api-key': process.env.HEY_GEN_API_M
+                  'x-api-key': process.env.HEY_GEN_API
               },
               body: JSON.stringify({
                   test: true,
@@ -110,7 +110,8 @@ const retrieveInterviewQuestionVideos = async (videoIds) => {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            'x-api-key': process.env.HEY_GEN_API_M
+            'x-api-key': process.env.HEY_GEN_API
+            
         }
     };
 
