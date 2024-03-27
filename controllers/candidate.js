@@ -153,6 +153,9 @@ exports.updateCandidateProfile = async (req, res) => {
   try {
     const candidate = await Candidates.findById(req.candidate._id);
     const { name, password, avatar } = req.body;
+    console.log(name)
+    console.log(password)
+    console.log(avatar)
     if (name) {
       candidate.name = name;
     }
