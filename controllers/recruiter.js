@@ -181,12 +181,12 @@ exports.setNewPassword = async (req,res)=>{
 exports.updateRecruiterProfile = async (req, res) => {
   try {
     const recruiter = await Recruiters.findById(req.recruiter._id);
-    const { name, email, avatar } = req.body;
+    const { name, password, avatar } = req.body;
     if (name) {
       recruiter.name = name;
     }
-    if (email) {
-      recruiter.email = email;
+    if (password) {
+      recruiter.password = password;
     }
     if (avatar) {
       recruiter.avatar = avatar;
