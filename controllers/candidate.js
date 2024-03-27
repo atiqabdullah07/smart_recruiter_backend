@@ -152,12 +152,12 @@ exports.continueWithGoogle = async (req, res) => {
 exports.updateCandidateProfile = async (req, res) => {
   try {
     const candidate = await Candidates.findById(req.candidate._id);
-    const { name, email, avatar } = req.body;
+    const { name, password, avatar } = req.body;
     if (name) {
       candidate.name = name;
     }
-    if (email) {
-      candidate.email = email;
+    if (password) {
+      candidate.password = password;
     }
     if (avatar) {
       candidate.avatar = avatar;
