@@ -4,10 +4,13 @@ const Recruiters = require("../models/recruiter");
 
 exports.createJob = async (req, res) => {
   try {
-    
-    const videoIds = await generateInterviewQuestionVideos(req.body.interviewQuestions)
-    console.log("Video IDs Retrieved")
-    console.log(videoIds)
+    const videoIds = []
+    if(req.body.interviewQuestions){
+
+      videoIds = await generateInterviewQuestionVideos(req.body.interviewQuestions)
+      console.log("Video IDs Retrieved")
+      console.log(videoIds)
+    }
     
     // console.log("Retrieving Video URLs from IDs");
     // const videoURLs = await retrieveInterviewQuestionVideos(videoIds)
