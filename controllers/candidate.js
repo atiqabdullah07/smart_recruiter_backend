@@ -277,6 +277,23 @@ exports.getMyCandidateProfile = async (req, res) => {
   }
 };
 
+exports.getCandidateProfile = async (req, res) => {
+  try {
+    const candidate = await Candidates.findById(req.params.id);
+    res.status(200).json({
+      success: true,
+      candidate,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
 exports.applyOnJob = async (req, res) => {
   try {
     const jobId = req.params.id;

@@ -9,6 +9,7 @@ const {
   registerCandidate,
   loginCandidate,
   getMyCandidateProfile,
+  getCandidateProfile,
   logoutCandidate,
   applyOnJob,
   updateCandidateProfile,
@@ -28,6 +29,7 @@ router.get("/canddiate", function (req, res, next) {
 router.route("/candidate/register").post(registerCandidate);
 router.route("/candidate/login").post(loginCandidate);
 router.route("/candidate/logout").get(logoutCandidate);
+router.route("/candidate/getCandidateProfile/:id").get(getCandidateProfile);
 
 //Google Auth
 router.route("/candidate/continueWithGoogle").post(continueWithGoogle)
