@@ -4,7 +4,7 @@ const Recruiters = require("../models/recruiter");
 
 exports.createJob = async (req, res) => {
   try {
-    const videoIds = []
+    var videoIds = []
     if(req.body.interviewQuestions){
 
       videoIds = await generateInterviewQuestionVideos(req.body.interviewQuestions)
@@ -51,7 +51,7 @@ exports.createJob = async (req, res) => {
 };
 
 const generateInterviewQuestionVideos = async (interviewQuestions) => {
-  const videoIds = [];
+  var videoIds = [];
 
   for (const question of interviewQuestions) {
       try {
@@ -60,7 +60,7 @@ const generateInterviewQuestionVideos = async (interviewQuestions) => {
               headers: {
                   accept: 'application/json',
                   'content-type': 'application/json',
-                  'x-api-key': process.env.HEY_GEN_API
+                  'x-api-key': process.env.HEY_GEN_API_E
               },
               body: JSON.stringify({
                   test: true,
@@ -105,7 +105,7 @@ const generateInterviewQuestionVideos = async (interviewQuestions) => {
   return videoIds;
 };
 const retrieveInterviewQuestionVideos = async (videoIds) => {
-  const videoURLs = []
+  var videoURLs = []
   for (let i = 0; i < videoIds.length; i++) {
     
     try{
@@ -113,7 +113,7 @@ const retrieveInterviewQuestionVideos = async (videoIds) => {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            'x-api-key': process.env.HEY_GEN_API
+            'x-api-key': process.env.HEY_GEN_API_E
             
         }
     };
