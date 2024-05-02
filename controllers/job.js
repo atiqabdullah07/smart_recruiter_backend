@@ -4,13 +4,13 @@ const Recruiters = require("../models/recruiter");
 
 exports.createJob = async (req, res) => {
   try {
-    var videoIds = []
-    if(req.body.interviewQuestions){
+    // var videoIds = []
+    // if(req.body.interviewQuestions){
 
-      videoIds = await generateInterviewQuestionVideos(req.body.interviewQuestions)
-      console.log("Video IDs Retrieved")
-      console.log(videoIds)
-    }
+    //   videoIds = await generateInterviewQuestionVideos(req.body.interviewQuestions)
+    //   console.log("Video IDs Retrieved")
+    //   console.log(videoIds)
+    // }
     
     // console.log("Retrieving Video URLs from IDs");
     // const videoURLs = await retrieveInterviewQuestionVideos(videoIds)
@@ -20,8 +20,8 @@ exports.createJob = async (req, res) => {
       experienceLevel: req.body.experienceLevel,
       jobType: req.body.jobType,
       skills: req.body.skills,
-      interviewQuestions: req.body.interviewQuestions,
-      interviewQuestionsVideos: videoIds,
+      //interviewQuestions: req.body.interviewQuestions,
+      //interviewQuestionsVideos: videoIds,
       avatar:req.recruiter.avatar,
       descriptionFile: req.body.descriptionFile,
       owner: req.recruiter._id,
@@ -221,14 +221,14 @@ exports.getJobById = async (req, res) => {
         message: "Job Not Found",
       });
     }
-    console.log("Retrieving Video URLs from IDs");
-    const videoURLs = await retrieveInterviewQuestionVideos(job.interviewQuestionsVideos)
-    console.log(videoURLs)
+    // console.log("Retrieving Video URLs from IDs");
+    // const videoURLs = await retrieveInterviewQuestionVideos(job.interviewQuestionsVideos)
+    // console.log(videoURLs)
 
     res.status(200).json({
       success: true,
-      job,
-      videoURLs
+      job
+      
     });
     
   } catch (error) {
@@ -238,34 +238,3 @@ exports.getJobById = async (req, res) => {
     });
   }
 };
-// exports.getJobByIdForInterview = async (req, res) => {
-//   try {
-//     const job = await Jobs.findById(req.params.id).populate(["owner",{
-//       path: "applicants",
-//       populate: {
-//         path: "applicant",
-//       }
-//     }]); // Params.id means the id we'll pass after the url
-//     if (!job) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Job Not Found",
-//       });
-//     }
-//     console.log("Retrieving Video URLs from IDs");
-//     const videoURLs = await retrieveInterviewQuestionVideos(job.interviewQuestionsVideos)
-//     console.log(videoURLs)
-
-//     res.status(200).json({
-//       success: true,
-//       job,
-//       videoURLs
-//     });
-    
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
