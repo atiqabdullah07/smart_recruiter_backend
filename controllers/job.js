@@ -1,5 +1,5 @@
 const Jobs = require("../models/jobs");
-
+const fetch = require('node-fetch');
 const Recruiters = require("../models/recruiter");
 
 exports.createJob = async (req, res) => {
@@ -236,5 +236,91 @@ exports.getJobById = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+
+
+
+const multer = require('multer');
+const FormData = require('form-data');
+
+// Set up multer storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single('file');
+
+exports.videoAnalysis = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const candidateId = req.candidate._id;
+    const job = await Jobs.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job Not Found",
+      });
+    }
+
+    // Check if the candidate has already applied and recorded their interview
+    const existingApplicant = job.applicants.find(
+      (applicant) => String(applicant.applicant) === String(candidateId)
+    );
+
+    if (existingApplicant && existingApplicant.videoAnalysis) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already recorded your interview for this job.",
+      });
+    }
+
+    // Handle file upload using multer middleware
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: 'File upload error.' });
+      } else if (err) {
+        return res.status(500).json({ error: 'Internal server error.' });
+      }
+
+      // Ensure that the file is provided in the request body
+      if (!req.file) {
+        return res.status(400).json({ error: 'File is required.' });
+      }
+
+      // Prepare formData to send the file to Flask server
+      const formData = new FormData();
+      formData.append('file', req.file.buffer, {
+        filename: 'recorded_video.webm',
+        contentType: req.file.mimetype,
+      });
+
+      // Send the file to Flask API
+      const flaskApiResponse = await fetch(`${process.env.FLASK_URL}/predict`, {
+        method: 'POST',
+        body: formData,
+        headers: formData.getHeaders(),
+      });
+
+      // Return the response from Flask API
+      const flaskApiResponseJson = await flaskApiResponse.json();
+
+      // Find the applicant within the applicants array
+      let applicantToUpdate = job.applicants.find(
+        (applicant) => String(applicant.applicant) === String(candidateId)
+      );
+
+      // Update the existing applicant's video analysis
+      applicantToUpdate.videoAnalysis = flaskApiResponseJson;
+      
+
+      await job.save();
+      return res.status(200).json({
+        success: true,
+        message: "Interview Recorded Successfully",
+      });
+    });
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).json({ error: 'Analysis Error' });
   }
 };

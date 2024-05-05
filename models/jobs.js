@@ -1,5 +1,22 @@
 var mongoose = require("mongoose");
-
+// Define sub-schema for video analysis result
+const videoAnalysisSchema = new mongoose.Schema({
+  Angry: Number,
+  ConfidenceScore: Number,
+  ConfidenceState: String,
+  Disgust: Number,
+  Fear: Number,
+  Happy: Number,
+  LackOfEnthusiasm: Number,
+  NervousnessScore: Number,
+  NervousnessState: String,
+  Neutral: Number,
+  Posture: String,
+  Sad: Number,
+  Sentiment: String,
+  SmileIndex: Number,
+  Surprise: Number
+});
 var jobSchema = new mongoose.Schema({
   title: String,
   avatar:String,
@@ -35,6 +52,9 @@ var jobSchema = new mongoose.Schema({
       },
       resumeAnalysisScore: {
         type: String,
+      },
+      videoAnalysis: {
+        type: videoAnalysisSchema, // Embed the video analysis sub-schema
       },
     },
   ],
