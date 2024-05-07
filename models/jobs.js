@@ -12,10 +12,10 @@ const videoAnalysisSchema = new mongoose.Schema({
   NervousnessState: String,
   Neutral: Number,
   Posture: String,
-  Sad: Number,
   Sentiment: String,
   SmileIndex: Number,
-  Surprise: Number
+  Surprise: Number,
+  
 });
 var jobSchema = new mongoose.Schema({
   title: String,
@@ -52,6 +52,9 @@ var jobSchema = new mongoose.Schema({
       },
       resumeAnalysisScore: {
         type: String,
+      },
+      videoAnalysisScore: {
+        type: Number,
       },
       videoAnalysis: {
         type: videoAnalysisSchema, // Embed the video analysis sub-schema

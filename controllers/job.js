@@ -303,6 +303,7 @@ exports.videoAnalysis = async (req, res) => {
 
       // Return the response from Flask API
       const flaskApiResponseJson = await flaskApiResponse.json();
+      console.log(flaskApiResponseJson)
 
       // Find the applicant within the applicants array
       let applicantToUpdate = job.applicants.find(
@@ -311,6 +312,7 @@ exports.videoAnalysis = async (req, res) => {
 
       // Update the existing applicant's video analysis
       applicantToUpdate.videoAnalysis = flaskApiResponseJson;
+      applicantToUpdate.videoAnalysisScore = flaskApiResponseJson.OverallScore;
       
 
       await job.save();
