@@ -18,7 +18,8 @@ const {
   continueWithGoogle,
   forgetPassword,
   resetPassword,
-  setNewPassword
+  setNewPassword,
+  myJobOffers
 } = require("../controllers/candidate");
 
 /* GET users listing. */
@@ -57,5 +58,8 @@ router
 router
   .route("/candidate/myAppliedJobs")
   .get(isCandidateAuthenticated,myAppliedJobs);
+router
+  .route("/candidate/myJobOffers")
+  .get(isCandidateAuthenticated,myJobOffers);
 
 module.exports = router;

@@ -402,3 +402,30 @@ exports.myAppliedJobs = async (req, res) => {
     });
   }
 };
+exports.myJobOffers = async (req, res) => {
+  try {
+    const candidateId = req.candidate._id;
+
+    // Find jobs where the candidate has applied
+    const jobs = await Jobs.find({ 'hiredApplicants': candidateId }).populate("owner");
+
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No job offers found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      jobs,
+      message: "Job Offers",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};

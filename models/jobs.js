@@ -1,20 +1,26 @@
 var mongoose = require("mongoose");
 // Define sub-schema for video analysis result
 const videoAnalysisSchema = new mongoose.Schema({
-  Angry: Number,
   ConfidenceScore: Number,
   ConfidenceState: String,
+  NervousnessScore: Number,
+  NervousnessState: String,
+
+  Angry: Number,
   Disgust: Number,
   Fear: Number,
   Happy: Number,
-  LackOfEnthusiasm: Number,
-  NervousnessScore: Number,
-  NervousnessState: String,
-  Neutral: Number,
-  Posture: String,
-  Sentiment: String,
-  SmileIndex: Number,
+  Sad: Number,
   Surprise: Number,
+  Neutral: Number,
+
+  Posture: String,
+  SmileIndex: Number,
+
+  Sentiment: String,
+  PositiveSentiment: String,
+  NegativeSentiment: String,
+  NeutralSentiment: String,
   
 });
 var jobSchema = new mongoose.Schema({
@@ -59,8 +65,18 @@ var jobSchema = new mongoose.Schema({
       videoAnalysis: {
         type: videoAnalysisSchema, // Embed the video analysis sub-schema
       },
+      responseAnalysisScore:{
+        type: Number,
+      },
+      responses:{
+        type:[String]
+      }
     },
   ],
+  hiredApplicants:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Candidate",
+  }]
 });
 
 const Jobs = mongoose.model("Job", jobSchema);

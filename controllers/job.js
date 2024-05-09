@@ -1,6 +1,8 @@
 const Jobs = require("../models/jobs");
 const fetch = require('node-fetch');
 const Recruiters = require("../models/recruiter");
+const Candidates = require("../models/candidate");
+const { sendEmail } = require("../middlewares/sendEmail");
 
 exports.createJob = async (req, res) => {
   try {
@@ -228,6 +230,118 @@ exports.getJobById = async (req, res) => {
     res.status(200).json({
       success: true,
       job
+      
+    });
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.getJobInterviewAnalysisData = async (req, res) => {
+  try {
+    const job = await Jobs.findById(req.params.id).populate(["owner",{
+      path: "applicants",
+      populate: {
+        path: "applicant",
+      }
+    }]); // Params.id means the id we'll pass after the url
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job Not Found",
+      });
+    }
+    
+    const ApplicantData = job.applicants.find(
+      (applicant) => String(applicant.applicant._id) === String(req.params.applicant)
+    );
+
+    
+    res.status(200).json({
+      success: true,
+      job,
+      ApplicantData
+      
+    });
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.hireApplicant = async (req, res) => {
+  try {
+    const job = await Jobs.findById(req.params.id).populate(["owner",{
+      path: "applicants",
+      populate: {
+        path: "applicant",
+      }
+    }]); // Params.id means the id we'll pass after the url
+    const candidate = await Candidates.findById(req.params.applicant);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job Not Found",
+      });
+    }
+    
+    const ApplicantData = job.applicants.find(
+      (applicant) => String(applicant.applicant._id) === String(req.params.applicant)
+    );
+    if(!ApplicantData){
+      return res.status(404).json({
+        success: false,
+        message: "Applicant has not applied for this job",
+      });
+    }
+    const alreadyAppliedCandidate = job.hiredApplicants.find(
+      (applicant) => String(applicant) === String(req.params.applicant)
+    );
+
+    if(alreadyAppliedCandidate){
+      return res.status(404).json({
+        success: false,
+        message: "Applicant has already sent invitation",
+      });
+    }
+
+    job.hiredApplicants.push(ApplicantData.applicant._id)
+    candidate.jobOffers.push(job._id)
+
+    await sendEmail({
+      email: candidate.email,
+      subject: "Job Application Status",
+      message: `Dear ${candidate.name} , 
+
+      We hope this email finds you well. We are writing to extend our warmest congratulations on behalf of ${job.owner.name} for being selected as our newest ${job.title}. After carefully reviewing your Resume and Video Interview insights on Smart Recruiter platform, we are delighted to offer you this opportunity to join our team.
+      
+      In the following days, our HR department will be in touch to discuss the formalities of your employment, including paperwork, benefits enrollment, and any other necessary arrangements. Should you have any questions or require further information in the meantime, please don't hesitate to reach out.
+
+      Once again, congratulations on your appointment to this position. We believe that you will thrive in our dynamic work environment, and we are excited about the positive impact you will undoubtedly make.
+
+      We eagerly anticipate the opportunity to work together and achieve great things.
+
+      Warm regards,
+      ${job.owner.name}
+      `
+
+    })
+
+    await job.save()
+    await candidate.save()
+    
+    
+    res.status(200).json({
+      success: true,
+      candidate,
+      job,
+      message: "An email has been sent to this applicant."
       
     });
     

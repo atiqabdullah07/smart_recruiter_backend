@@ -22,7 +22,10 @@ var candidateSchema = new mongoose.Schema({
     //minLength: [6, "Password must be atleast 6 chars"],
     select: false, // Means when we'll Access user's data we'll get all user information except this (i.e Password)
   },
-
+  jobOffers:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Job",
+  }],
   resetPasswordToken: String,
   resetPasswordDate: Date,
 });
