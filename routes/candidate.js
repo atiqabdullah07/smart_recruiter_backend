@@ -19,7 +19,8 @@ const {
   forgetPassword,
   resetPassword,
   setNewPassword,
-  myJobOffers
+  myJobOffers,
+  alreadyRecordInterview
 } = require("../controllers/candidate");
 
 /* GET users listing. */
@@ -55,6 +56,9 @@ router
 router
   .route("/candidate/alreadyApplyJob")
   .post(isCandidateAuthenticated,alreadyApplyOnJob);
+router
+  .route("/candidate/alreadyRecordInterview/:id")
+  .get(isCandidateAuthenticated,alreadyRecordInterview);
 router
   .route("/candidate/myAppliedJobs")
   .get(isCandidateAuthenticated,myAppliedJobs);

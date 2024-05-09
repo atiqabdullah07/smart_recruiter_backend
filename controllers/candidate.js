@@ -374,6 +374,43 @@ exports.alreadyApplyOnJob = async (req, res) => {
     });
   }
 };
+exports.alreadyRecordInterview = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const candidateId = req.candidate._id;
+    const job = await Jobs.findById(jobId);
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "job Not Found",
+      });
+    }
+    // Check if the candidate has already applied
+    const isAlreadyApplied = job.applicants.filter(
+      (applicant) => String(applicant.applicant) === String(candidateId)
+    );
+    console.log(isAlreadyApplied)
+
+    if (isAlreadyApplied[0].videoAnalysis || isAlreadyApplied[0].videoAnalysisScore) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already recorded interview for this job.",
+      });
+    }
+    
+
+    
+    return res.status(200).json({
+      success: true,
+      message: "You can record your interview for this Job",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 exports.myAppliedJobs = async (req, res) => {
   try {
