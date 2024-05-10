@@ -17,13 +17,31 @@ exports.createJob = async (req, res) => {
     // console.log("Retrieving Video URLs from IDs");
     // const videoURLs = await retrieveInterviewQuestionVideos(videoIds)
     // console.log(videoURLs)
+    const raw = JSON.stringify({
+      "job_title": req.body.title,
+      "skills": req.body.skills,
+      "experience": req.body.experienceLevel
+    });
+    const flaskApiResponse = await fetch(`${process.env.FLASK_URL}/generate_questions`, {
+      method: 'POST',
+      body: raw,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      redirect:"follow"
+     
+    });
+
+    // Return the response from Flask API
+    const flaskApiResponseJson = await flaskApiResponse.json();
+    console.log(flaskApiResponseJson)
+
     const newJobData = {
       title: req.body.title,
       experienceLevel: req.body.experienceLevel,
       jobType: req.body.jobType,
       skills: req.body.skills,
-      //interviewQuestions: req.body.interviewQuestions,
-      //interviewQuestionsVideos: videoIds,
+      interviewQuestions: flaskApiResponseJson.questions,
       avatar:req.recruiter.avatar,
       descriptionFile: req.body.descriptionFile,
       owner: req.recruiter._id,
@@ -408,8 +426,121 @@ exports.videoAnalysis = async (req, res) => {
         contentType: req.file.mimetype,
       });
 
+
       // Send the file to Flask API
       const flaskApiResponse = await fetch(`${process.env.FLASK_URL}/predict`, {
+        method: 'POST',
+        body: formData,
+        headers: formData.getHeaders(),
+      });
+
+      //Return the response from Flask API
+      const flaskApiResponseJson = await flaskApiResponse.json();
+      console.log(flaskApiResponseJson)
+
+      // Find the applicant within the applicants array
+      let applicantToUpdate = job.applicants.find(
+        (applicant) => String(applicant.applicant) === String(candidateId)
+      );
+
+      // Update the existing applicant's video analysis
+      applicantToUpdate.videoAnalysis = flaskApiResponseJson;
+      applicantToUpdate.videoAnalysisScore = flaskApiResponseJson.OverallScore;
+      
+      // Retrieve userResponses from the request body
+      const userResponses = req.body.userResponses;
+      console.log(userResponses)
+      applicantToUpdate.responses=userResponses;
+
+      // Send the file to Flask API
+      const raw = JSON.stringify({
+        "questions": job.interviewQuestions,
+        "answers": userResponses
+      });
+      const flaskApiResponse1 = await fetch(`${process.env.FLASK_URL}/evaluate_answers`, {
+        method: 'POST',
+        body: raw,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        redirect:"follow"
+       
+      });
+
+      // Return the response from Flask API
+      const flaskApiResponseJson1 = await flaskApiResponse1.json();
+      console.log(flaskApiResponseJson1)
+
+
+      // Update the existing applicant's video analysis
+      applicantToUpdate.responseAnalysisScore = flaskApiResponseJson1.final_score;
+      
+      // Extracting scores from evaluations array
+      const scores = flaskApiResponseJson1.evaluations.map(evaluation => evaluation.score);
+
+      console.log(scores);
+      applicantToUpdate.evaluations = scores
+      await job.save();
+      return res.status(200).json({
+        success: true,
+        message: "Interview Recorded Successfully",
+      });
+    });
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).json({ error: 'Analysis Error' });
+  }
+};
+
+
+
+exports.recognizeSpeech = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const candidateId = req.candidate._id;
+    const job = await Jobs.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job Not Found",
+      });
+    }
+
+    // Check if the candidate has already applied and recorded their interview
+    const existingApplicant = job.applicants.find(
+      (applicant) => String(applicant.applicant) === String(candidateId)
+    );
+
+    if (existingApplicant && existingApplicant.videoAnalysis) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already recorded your interview for this job.",
+      });
+    }
+
+    // Handle file upload using multer middleware
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: 'File upload error.' });
+      } else if (err) {
+        return res.status(500).json({ error: 'Internal server error.' });
+      }
+
+      // Ensure that the file is provided in the request body
+      if (!req.file) {
+        return res.status(400).json({ error: 'File is required.' });
+      }
+
+      // Prepare formData to send the file to Flask server
+      const formData = new FormData();
+      formData.append('file', req.file.buffer, {
+        filename: 'recorded_video.webm',
+        contentType: req.file.mimetype,
+      });
+
+      // Send the file to Flask API
+      const flaskApiResponse = await fetch(`${process.env.FLASK_URL}/recognizeSpeech`, {
         method: 'POST',
         body: formData,
         headers: formData.getHeaders(),
@@ -425,14 +556,14 @@ exports.videoAnalysis = async (req, res) => {
       );
 
       // Update the existing applicant's video analysis
-      applicantToUpdate.videoAnalysis = flaskApiResponseJson;
-      applicantToUpdate.videoAnalysisScore = flaskApiResponseJson.OverallScore;
+      applicantToUpdate.responses.push(flaskApiResponseJson.data);
+      
       
 
       await job.save();
       return res.status(200).json({
         success: true,
-        message: "Interview Recorded Successfully",
+        message: "Speech Recognized Successfully",
       });
     });
   } catch (error) {

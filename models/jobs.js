@@ -70,6 +70,9 @@ var jobSchema = new mongoose.Schema({
       },
       responses:{
         type:[String]
+      },
+      evaluations:{
+        type:[String]
       }
     },
   ],
