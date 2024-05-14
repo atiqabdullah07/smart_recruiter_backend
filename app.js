@@ -18,9 +18,12 @@ var candidateRouter = require("./routes/candidate");
 var app = express();
 
 // Make Connection with the database
-
+//old
+// const connection = mongoose.connect(
+//   "mongodb+srv://smartrecruiter:OhfdsK8S7R3ERfD3@cluster0.fqopnou.mongodb.net/?retryWrites=true&w=majority"
+// );
 const connection = mongoose.connect(
-  "mongodb+srv://smartrecruiter:OhfdsK8S7R3ERfD3@cluster0.fqopnou.mongodb.net/?retryWrites=true&w=majority"
+  "mongodb+srv://admin:admin@cluster0.xyfuqie.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 );
 console.log("Connecting..");
 
